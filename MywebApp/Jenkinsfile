@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    stages {
+        stage('Git checkout') {
+            steps { 
+                git 'https://github.com/opedinas/devopyusf.git'
+            }
+
+
+        }
+        stage('Build') {
+            steps {
+               sh 'cd MywebApp && mvn clean package'
+            } 
+        }
+        stage('test') {
+            steps {
+                sh 'cd MywebApp && mvn test'
+            }
+        }
+        stage ('deploy to tomcat') {
+            steps {
+                deploy adapters: [tomcat9(credentialsId: '32fa6785-ff67-4afb-b4af-2c894ad79f45', path: '', url: 'http://44.200.211.104:8080/')], contextPath: 'pipelineapp', war: ' **/*.war'
+            } 
+
+                
+            
+        }
+    
+    }
+}   
